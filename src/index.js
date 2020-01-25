@@ -26,13 +26,6 @@ if (hideScroll) {
   document.body.style.overflow = "hidden";
 }
 
-const convertTimeTravelRecordedStreamToRecordedStream = timeTravelRecorded => {
-  return timeTravelRecorded.map(x => ({
-    value: x.value,
-    stamp: x.timestamp
-  }));
-};
-
 const makeProgram = ({ Time = null } = {}) => {
   // an example program
   const program = sources => {
@@ -54,6 +47,7 @@ const makeProgram = ({ Time = null } = {}) => {
   };
 };
 
+// TODO: wrap it with a make
 const main = sources => {
   // disable the download button if record is false
   if (!record) {
@@ -115,9 +109,19 @@ const main = sources => {
   });
 };
 
+// Create drivers
+
 const videoWidth = 640;
 const videoHeight = 480;
 
+const convertTimeTravelRecordedStreamToRecordedStream = timeTravelRecorded => {
+  return timeTravelRecorded.map(x => ({
+    value: x.value,
+    stamp: x.timestamp
+  }));
+};
+
+// TODO: make an initializer
 const drivers = Object.assign({}, initializeTabletFaceRobotDrivers(), {
   Time: timeDriver,
   TabletFace: makeTabletFaceDriver({ styles: { eyeSize: "30vmin" } }),
@@ -154,5 +158,7 @@ const drivers = Object.assign({}, initializeTabletFaceRobotDrivers(), {
       })
     : mockDownloadDataSource
 });
+
+// Run
 
 run(main, drivers);
