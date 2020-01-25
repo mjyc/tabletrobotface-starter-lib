@@ -1,5 +1,5 @@
 {
-  "private": "true",
+  "private": true,
   "scripts": {
     "watch": "npx mkdirp dist && npx watchify src/index.js -t babelify --outfile dist/index.js -dv",
     "prestart": "test -e src/settings.json || echo {} > src/settings.json",
