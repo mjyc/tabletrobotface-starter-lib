@@ -2,7 +2,7 @@ import xs from "xstream";
 import { run } from "@cycle/run";
 import {
   createTabletFaceRobotSandboxDrivers,
-  makeTabletFaceRobotSandbox
+  TabletFaceRobotSandbox
 } from "tabletrobotface-starter-lib";
 
 const settings = Object.assign(
@@ -43,7 +43,7 @@ const makeProgram = ({ Time = null } = {}) => {
   };
 };
 
-const main = makeTabletFaceRobotSandbox(makeProgram, {
+const main = TabletFaceRobotSandbox(makeProgram, {
   record: settings.record,
   displayPoseViz: settings.displayPoseViz
 });

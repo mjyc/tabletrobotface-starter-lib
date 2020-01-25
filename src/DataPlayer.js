@@ -81,6 +81,7 @@ export default (
         };
       },
       {
+        hidePoseViz: true,
         styles: {
           robotSpeechbubble: {
             styles: {
@@ -109,7 +110,7 @@ export default (
               style: {
                 display: "flex",
                 flexWrap: "wrap",
-                justifyContent: "space-between",
+                justifyContent: "space-evenly",
                 alignItems: "flex-start"
               }
             },

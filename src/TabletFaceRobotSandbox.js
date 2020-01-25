@@ -3,7 +3,7 @@ import { withState } from "@cycle/state";
 import { div } from "@cycle/dom";
 import { withTabletFaceRobotActions } from "@cycle-robot-drivers/run";
 import { DataDownloader } from "./utils";
-import makeTabletFaceRobot from "./makeTabletFaceRobot";
+import TabletFaceRobot from "./TabletFaceRobot";
 
 export default (makeProgram, { record = true, displayPoseViz = true } = {}) => {
   return sources => {
@@ -43,7 +43,7 @@ export default (makeProgram, { record = true, displayPoseViz = true } = {}) => {
     };
     const sinks = withState(
       withTabletFaceRobotActions(
-        makeTabletFaceRobot(makeProgram, {
+        TabletFaceRobot(makeProgram, {
           dataProxy: dataProxy$,
           stopRecord: stopRecording$
         }),
