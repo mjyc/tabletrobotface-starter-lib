@@ -5,31 +5,7 @@ import { withTabletFaceRobotActions } from "@cycle-robot-drivers/run";
 import { DataDownloader } from "./utils";
 import makeTabletFaceRobot from "./makeTabletFaceRobot";
 
-export default () => {
-  const record = true;
-  const displayPoseViz = true;
-
-  const makeProgram = ({ Time = null } = {}) => {
-    // an example program
-    const program = sources => {
-      const sinks = {
-        setMessage: xs.of("Hello!"),
-        askMultipleChoice: xs.of(["Let's do this"]),
-        test: sources.askMultipleChoiceFinished
-          .compose(Time.delay(1000))
-          .mapTo("bye!")
-      };
-      return sinks;
-    };
-
-    return sources => {
-      const programSources = sources;
-      const programSinks = program(sources);
-      const sinks = programSinks;
-      return sinks;
-    };
-  };
-
+export default (makeProgram, { record = true, displayPoseViz = true } = {}) => {
   return sources => {
     // disable the download button if record is false
     if (!record) {

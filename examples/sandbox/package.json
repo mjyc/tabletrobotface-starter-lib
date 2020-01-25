@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "@cycle/run": "5.2.0",
-    "tabletrobotface-starter-lib": "file:../../"
+    "tabletrobotface-starter-lib": "file:../../",
+    "xstream": "^11.11.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

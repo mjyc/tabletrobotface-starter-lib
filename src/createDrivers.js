@@ -10,9 +10,7 @@ import {
 } from "./utils";
 import makeAudioAverageFrequencyDriver from "./makeAudioAverageFrequencyDriver";
 
-export default () => {
-  const record = true;
-
+export default ({ record = true, settings = {} } = {}) => {
   const videoWidth = 640;
   const videoHeight = 480;
 
@@ -39,8 +37,8 @@ export default () => {
           constraints: {
             video: {
               facingMode: "user",
-              width: 640,
-              height: 480
+              width: videoWidth,
+              height: videoHeight
             },
             audio: true
           },
@@ -56,7 +54,7 @@ export default () => {
                 data[k]
               );
             }
-            return { traces: data, settings };
+            return { traces: data, settings }; // backup "settings" too
           }
         })
       : mockDownloadDataSource
