@@ -1,7 +1,7 @@
 {
-  "name": "tabletrobotface-userstudy",
+  "name": "tabletrobotface-starter-lib",
   "version": "0.0.0",
-  "description": "A sandbox pkg for Tablet Face robot",
+  "description": "A library for tablet robot face starter project",
   "scripts": {
     "build": "npx browserify src/index.js -t babelify --outfile dist/index.js -dv",
     "watch": "npx mkdirp dist && npx watchify src/index.js -t babelify --outfile dist/index.js -dv",
