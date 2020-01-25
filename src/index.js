@@ -15,13 +15,9 @@ import {
   makeMediaRecorderDriver,
   mockMediaRecorderSource,
   DataDownloader
-} from "tabletrobotface-userstudy";
+} from "./utils";
 import makeTabletFaceRobot from "./makeTabletFaceRobot";
 import makeAudioAverageFrequencyDriver from "./makeAudioAverageFrequencyDriver";
-
-// ------
-// Consts
-// ------
 
 const settings = require("./settings.json");
 // defaults to "dev" setting
@@ -29,19 +25,6 @@ const { record = true, displayPoseViz = true, hideScroll = false } = settings;
 if (hideScroll) {
   document.body.style.overflow = "hidden";
 }
-
-const videoWidth = 640;
-const videoHeight = 480;
-
-const stopRecording$ = xs.create(); // used for stopping recording
-// stop recording in 30min
-setTimeout(() => {
-  stopRecording$.shamefullySendNext(xs.never());
-}, 60 * 30000);
-
-// ---------
-// Functions
-// ---------
 
 const convertTimeTravelRecordedStreamToRecordedStream = timeTravelRecorded => {
   return timeTravelRecorded.map(x => ({
@@ -87,7 +70,13 @@ const main = sources => {
   }
 
   const dataProxy$ = xs.create(); // for recording data
+  const stopRecording$ = xs.create(); // used for stopping recording
+  // stop recording in 30min
+  setTimeout(() => {
+    stopRecording$.shamefullySendNext(xs.never());
+  }, 60 * 30000);
 
+  // setup the robot face logic
   const options = {
     hidePoseViz: !displayPoseViz,
     styles: {
@@ -110,12 +99,12 @@ const main = sources => {
     )
   )(sources);
 
+  // setup outputs
   const dataDownloader = DataDownloader(sources, dataProxy$);
   const videoRecorder$ = xs.merge(
     sources.VideoRecorder.filter(v => v.type === "READY").mapTo("START"),
     dataDownloader.VideoRecorder
   );
-
   const vdom$ = xs
     .combine(sinks.DOM || xs.never(), dataDownloader.DOM)
     .map(vdoms => div(vdoms));
@@ -125,6 +114,9 @@ const main = sources => {
     DownloadData: dataDownloader.DownloadData
   });
 };
+
+const videoWidth = 640;
+const videoHeight = 480;
 
 const drivers = Object.assign({}, initializeTabletFaceRobotDrivers(), {
   Time: timeDriver,
