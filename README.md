@@ -6,7 +6,5 @@
 2. Run
     ```
     npm install
-    npm run all
+    npm run start
     ```
-
-## Settings.json
