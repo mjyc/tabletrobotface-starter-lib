@@ -1,7 +1,7 @@
 import xs from "xstream";
 import { run } from "@cycle/run";
 import {
-  createDrivers,
+  createTabletFaceRobotSandboxDrivers,
   makeTabletFaceRobotSandbox
 } from "tabletrobotface-starter-lib";
 
@@ -48,6 +48,9 @@ const main = makeTabletFaceRobotSandbox(makeProgram, {
   displayPoseViz: settings.displayPoseViz
 });
 
-const drivers = createDrivers({ record: settings.record, settings });
+const drivers = createTabletFaceRobotSandboxDrivers({
+  record: settings.record,
+  settings
+});
 
 run(main, drivers);
