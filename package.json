@@ -1,28 +1,39 @@
 {
   "private": true,
   "scripts": {
-    "build": "npx browserify src/index.js -o dist/index.js -dv -t [ babelify --presets [ es2015 ]]",
-    "watch": "npx mkdirp dist && npx watchify src/index.js -o dist/index.js -dv -t [ babelify --presets [ es2015 ]]",
-    "prestart": "test -e src/settings.json || echo {} > src/settings.json",
+    "postinstall": "if [ ${DEV:-0} = 1 ]; then rm -rf node_modules/listrp node_modules/iterrep && ln -s ../../../pkgs/listrp node_modules/listrp && ln -s ../../../src node_modules/iterrep; fi",
+    "build": "npx browserify src/index.js -t babelify --outfile dist/index.js -dv",
+    "watch": "npx mkdirp dist && npx watchify src/index.js -t babelify --outfile dist/index.js -dv",
+    "prestart": "test -e src/settings.json || echo {} > src/settings.json; test -e paramsTemplates.json || ln -s node_modules/iterrep/testdata/paramsTemplates.json paramsTemplates.json; test -e src/parameters.json || cat paramsTemplates.json | json default > src/parameters.json",
     "start": "npx concurrently \"npm run watch\" \"npx live-server --watch=dist/index.js,index.html\"",
-    "test": "npx jest"
+    "watch:tester": "npx mkdirp dist && npx watchify src/tester.js -t babelify --outfile dist/tester.js -dv",
+    "start:tester": "npx concurrently \"npm run watch:tester\" \"npx live-server --watch=dist/tester.js,tester.html --open=tester.html\"",
+    "userstudy:neck": "cat paramsTemplates.json | json unresponsive > src/parameters.json && cat settingTemplates.json | json neck > src/settings.json && npm start",
+    "userstudy:turn": "cat paramsTemplates.json | json unresponsive > src/parameters.json && cat settingTemplates.json | json turn > src/settings.json && npm start",
+    "demo:neck": "cat paramsTemplates.json | json demo > src/parameters.json && cat settingTemplates.json | json demo_neck > src/settings.json &&  npm start",
+    "demo:turn": "cat paramsTemplates.json | json demo > src/parameters.json && cat settingTemplates.json | json demo_turn > src/settings.json &&  npm start"
   },
   "dependencies": {
-    "@cycle-robot-drivers/run": "1.0.26",
+    "@cycle-robot-drivers/run": "1.0.25",
     "@cycle-robot-drivers/screen": "1.1.7",
-    "@cycle/dom": "^22.3.0",
-    "@cycle/run": "^5.2.0",
-    "@cycle/state": "^1.2.0",
-    "@cycle/time": "^0.19.0",
-    "@mjyc/voice-activity-detection": "0.0.3",
-    "cycle-posenet-driver": "1.0.6",
-    "ltljs": "0.0.1",
-    "xstream": "^11.11.0"
+    "@cycle/dom": "22.3.0",
+    "@cycle/run": "5.2.0",
+    "@cycle/state": "1.2.0",
+    "@cycle/storage": "^5.0.3",
+    "@cycle/time": "0.19.0",
+    "@mjyc/cycle-time-travel": "0.1.4",
+    "@mjyc/voice-activity-detection": "1.0.0",
+    "cycle-posenet-driver": "1.0.8",
+    "iterrep": "0.0.1",
+    "listrp": "0.0.3",
+    "lodash": "4.17.15",
+    "tabletrobotface-userstudy": "0.0.10",
+    "xstream": "11.11.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
-    "babelify": "^8.0.0",
-    "speclang": "../speclang"
+    "babelify": "^8.0.0"
   }
 }

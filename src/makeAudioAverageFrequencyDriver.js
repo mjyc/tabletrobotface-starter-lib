@@ -1,16 +1,15 @@
-const xs = require("./streams").default;
+const xs = require("xstream").default;
 const vad = require("@mjyc/voice-activity-detection");
 
-const makeVADDriver = () => {
+module.exports = function() {
   let audioContext;
 
-  const voiceActivityDetectionDriver = () => {
+  return function audioAverageFrequencyDriver() {
     const output$ = xs.create({
       start: listener => {
         function handleUserMediaError() {
           listener.error("Mic input is not supported by the browser.");
         }
-
         function handleMicConnectError() {
           listener.error(
             "Could not connect microphone. Possible rejected by the user or is blocked by the browser."
@@ -23,16 +22,14 @@ const makeVADDriver = () => {
             audioContext = new AudioContext();
             // https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#audiovideo_elements
             if (audioContext.state === "suspended") {
-              console.warn(
-                `audioContext.state is "suspended"; will attempt to resume every 1s`
+              console.debug(
+                `audioContext.state is "suspended"; will try again in 1s`
               );
               const handle = setInterval(() => {
                 if (!!audioContext && audioContext.state === "suspended") {
                   audioContext.resume();
                 } else if (audioContext.state === "running") {
-                  console.debug(
-                    `audioContext.state is "running"; stopping resuming attempts`
-                  );
+                  console.debug(`audioContext.state is "running"; done`);
                   clearInterval(handle);
                 }
               }, 1000);
@@ -54,16 +51,9 @@ const makeVADDriver = () => {
         }
         function startUserMedia(stream) {
           const opts = {
-            useNoiseCapture: true,
-            avgNoiseMultiplier: 1.5,
-            activityCounterThresh: 30,
-            activityCounterMax: 80,
-            useDefaultActivityCounting: false,
-            onVoiceStart: function() {
-              listener.next(true);
-            },
-            onVoiceStop: function() {
-              listener.next(false);
+            useNoiseCapture: false,
+            onUpdate: function({ average }) {
+              listener.next(average);
             }
           };
           vad(audioContext, stream, opts);
@@ -75,7 +65,4 @@ const makeVADDriver = () => {
 
     return output$;
   };
-  return voiceActivityDetectionDriver;
 };
-
-module.exports = makeVADDriver;
