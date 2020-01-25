@@ -2,16 +2,21 @@ import xs from "xstream";
 import { run } from "@cycle/run";
 import { createMain, createDrivers } from "tabletrobotface-starter-lib";
 
-const settings = require("./settings.json");
-// defaults to "dev" setting
-const { record = true, displayPoseViz = true, hideScroll = false } = settings;
-if (hideScroll) {
+const settings = Object.assign(
+  // defaults to "dev" setting
+  { record: true, displayPoseViz: true, hideScroll: false },
+  require("./settings.json")
+);
+if (settings.hideScroll) {
   document.body.style.overflow = "hidden";
 }
 
 const makeProgram = ({ Time = null } = {}) => {
   // an example program
   const program = sources => {
+    sources.facePoses.addListener({ next: console.log });
+    sources.voiceLevel.addListener({ next: console.log });
+
     const sinks = {
       setMessage: xs.merge(
         xs.of("Hello!"),
@@ -19,7 +24,7 @@ const makeProgram = ({ Time = null } = {}) => {
           .compose(Time.delay(3000))
           .mapTo("bye!")
       ),
-      askMultipleChoice: xs.of(["Let's do this"]),
+      askMultipleChoice: xs.of(["Let's do this!"]),
       test: sources.askMultipleChoiceFinished
         .compose(Time.delay(1000))
         .mapTo("test")
@@ -35,8 +40,11 @@ const makeProgram = ({ Time = null } = {}) => {
   };
 };
 
-const main = createMain(makeProgram, { record, displayPoseViz });
+const main = createMain(makeProgram, {
+  record: settings.record,
+  displayPoseViz: settings.displayPoseViz
+});
 
-const drivers = createDrivers({ record, settings });
+const drivers = createDrivers({ record: settings.record, settings });
 
 run(main, drivers);
