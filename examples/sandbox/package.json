@@ -1,0 +1,19 @@
+{
+  "private": "true",
+  "scripts": {
+    "build": "npx browserify src/index.js -t babelify --outfile dist/index.js -dv",
+    "watch": "npx mkdirp dist && npx watchify src/index.js -t babelify --outfile dist/index.js -dv",
+    "prestart": "test -e src/settings.json || echo {} > src/settings.json",
+    "start": "npx concurrently \"npm run watch\" \"npx live-server --watch=dist/index.js,index.html\""
+  },
+  "dependencies": {
+    "@cycle/run": "5.2.0",
+    "tabletrobotface-starter-lib": "file:../../"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-es2015": "^6.24.1",
+    "babelify": "^8.0.0"
+  }
+}

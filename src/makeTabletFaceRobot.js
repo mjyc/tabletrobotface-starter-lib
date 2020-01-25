@@ -2,7 +2,7 @@ import xs from "xstream";
 import sampleCombine from "xstream/extra/sampleCombine";
 import { recordStreams } from "@mjyc/cycle-time-travel";
 
-module.exports = (
+export default (
   makeProgram,
   { dataProxy = dataProxy$.create(), stopRecording = xs.never() } = {}
 ) => {

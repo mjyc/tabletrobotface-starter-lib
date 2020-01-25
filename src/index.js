@@ -1,16 +1,30 @@
-import { run } from "@cycle/run";
-import createMain from "./createMain";
-import createDrivers from "./createDrivers";
+export { default as createMain } from "./createMain";
+export { default as createDrivers } from "./createDrivers";
+export { default as makeTabletFaceRobot } from "./makeTabletFaceRobot";
+export {
+  default as makeAudioAverageFrequencyDriver
+} from "./makeAudioAverageFrequencyDriver";
 
-const settings = require("./settings.json");
-// defaults to "dev" setting
-const { record = true, displayPoseViz = true, hideScroll = false } = settings;
-if (hideScroll) {
-  document.body.style.overflow = "hidden";
-}
+// module.exports = {
+//   createMain: require("./createMain"),
+//   createDrivers: require("./createDrivers"),
+//   makeAudioAverageFrequencyDriver: require("./makeAudioAverageFrequencyDriver"),
+//   makeTabletFaceRobot: require("./makeTabletFaceRobot")
+// };
 
-const main = createMain();
+// import { run } from "@cycle/run";
+// import createMain from "./createMain";
+// import createDrivers from "./createDrivers";
 
-const drivers = createDrivers();
+// const settings = require("./settings.json");
+// // defaults to "dev" setting
+// const { record = true, displayPoseViz = true, hideScroll = false } = settings;
+// if (hideScroll) {
+//   document.body.style.overflow = "hidden";
+// }
 
-run(main, drivers);
+// const main = createMain();
+
+// const drivers = createDrivers();
+
+// run(main, drivers);
