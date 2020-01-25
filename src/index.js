@@ -56,7 +56,10 @@ const makeProgram = ({ Time = null } = {}) => {
   const program = sources => {
     const sinks = {
       setMessage: xs.of("Hello!"),
-      askMultipleChoice: xs.of(["Hi"])
+      askMultipleChoice: xs.of(["Let's do this"]),
+      test: sources.askMultipleChoiceFinished
+        .compose(Time.delay(1000))
+        .mapTo("bye!")
     };
     return sinks;
   };
@@ -137,9 +140,14 @@ const main = sources => {
         askMultipleChoiceFinished: askMultipleChoiceFinished$,
         sayFinished: sayFinished$
       });
-      // process program sinks
+      // process expected program sinks
       const followFace$ = sinks.followFace || xs.never();
       const express$ = sinks.express || xs.never();
+      const setMessage$ = sinks.setMessage || xs.never();
+      const setImage$ = sinks.setImage || xs.never();
+      const askMultipleChoice$ = sinks.askMultipleChoice || xs.never();
+      const say$ = sinks.say || xs.never();
+      // prepare outgoing sinks
       const tabletFace$ = xs.merge(
         sources.TabletFace.events("load").mapTo({
           type: "START_BLINKING",
@@ -181,13 +189,37 @@ const main = sources => {
           value: { type: x }
         }))
       );
+      const robotSpeechbubbleAction$ = {
+        goal: xs.merge(
+          setMessage$,
+          setImage$.map(x => ({
+            type: "IMAGE",
+            value: x
+          }))
+        )
+      };
+      const humanSpeechbubbleAction$ = {
+        goal: sinks.askMultipleChoice || xs.never()
+      };
+      const speechSynthesisAction$ = {
+        goal: sinks.say || xs.never()
+      };
 
       // Record data
       const videoStart$ = sources.VideoRecorder.filter(v => v.type === "START");
-      // TODO: dynamically generate the input
       // Cache out some data
       const recordedStreams = recordStreams(
         [
+          // for dataplayer
+          {
+            stream: tabletFace$.take(1), // skip recoding 'SET_STATE's since they cannot be replayed properly using dataplayer
+            label: "TabletFace"
+          },
+          {
+            stream: videoStart$,
+            label: "videoStart"
+          },
+          // program inputs
           {
             stream: tabletfaceLoaded$,
             label: "tabletfaceLoaded"
@@ -228,31 +260,37 @@ const main = sources => {
             stream: sayFinished$,
             label: "sayFinished"
           },
+          // program outputs
           {
-            stream: sinks.setMessage || xs.never(),
+            stream: setMessage$,
             label: "setMessage"
           },
           {
-            stream: sinks.setImage || xs.never(),
+            stream: setImage$,
             label: "setImage"
           },
           {
-            stream: sinks.askMultipleChoice || xs.never(),
+            stream: askMultipleChoice$,
             label: "askMultipleChoice"
           },
           {
-            stream: sinks.say || xs.never(),
+            stream: say$,
             label: "say"
-          },
-          {
-            stream: videoStart$,
-            label: "videoStart"
-          },
-          {
-            stream: tabletFace$.take(1), // skip recoding 'SET_STATE's since they cannot be replayed properly using dataplayer
-            label: "TabletFace"
           }
-        ],
+        ].concat(
+          // record other outputs too
+          Object.keys(sinks)
+            .filter(
+              name =>
+                ["setMessage", "setImage", "askMultipleChoice", "say"].indexOf(
+                  name
+                ) === -1
+            )
+            .map(name => ({
+              stream: sinks[name],
+              label: name
+            }))
+        ),
         time$
       );
       const data$ = xs.combine.apply(null, recordedStreams).map(recorded => {
@@ -265,25 +303,11 @@ const main = sources => {
       });
       dataProxy$.imitate(data$);
 
-      // TODOs: cache out outputs
-      // move the options upward
       return {
         TabletFace: tabletFace$,
-        RobotSpeechbubbleAction: {
-          goal: xs.merge(
-            sinks.setMessage || xs.never(),
-            (sinks.setImage || xs.never()).map(x => ({
-              type: "IMAGE",
-              value: x
-            }))
-          )
-        },
-        HumanSpeechbubbleAction: {
-          goal: sinks.askMultipleChoice || xs.never()
-        },
-        SpeechSynthesisAction: {
-          goal: sinks.say || xs.never()
-        }
+        RobotSpeechbubbleAction: robotSpeechbubbleAction$,
+        HumanSpeechbubbleAction: humanSpeechbubbleAction$,
+        SpeechSynthesisAction: speechSynthesisAction$
       };
     }, options)
   )(sources);
@@ -312,7 +336,7 @@ const drivers = Object.assign({}, initializeTabletFaceRobotDrivers(), {
     videoHeight,
     flipHorizontal: true,
     fps: 30,
-    closeGUIOnStart: true
+    closeGUIOnStart: false
   }),
   VoiceLevel: makeAudioAverageFrequencyDriver(),
   VideoRecorder: record
