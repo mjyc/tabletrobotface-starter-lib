@@ -1,6 +1,9 @@
 import xs from "xstream";
 import { run } from "@cycle/run";
-import { createMain, createDrivers } from "tabletrobotface-starter-lib";
+import {
+  createDrivers,
+  makeTabletFaceRobotSandbox
+} from "tabletrobotface-starter-lib";
 
 const settings = Object.assign(
   // defaults to "dev" setting
@@ -40,7 +43,7 @@ const makeProgram = ({ Time = null } = {}) => {
   };
 };
 
-const main = createMain(makeProgram, {
+const main = makeTabletFaceRobotSandbox(makeProgram, {
   record: settings.record,
   displayPoseViz: settings.displayPoseViz
 });
