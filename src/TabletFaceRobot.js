@@ -46,6 +46,7 @@ export default (
       sayFinished: sayFinished$
     });
     // process expected program sinks
+    const startRecording$ = sinks.startRecording || xs.never();
     const followFace$ = sinks.followFace || xs.never();
     const express$ = sinks.express || xs.never();
     const setMessage$ = sinks.setMessage || xs.never();
@@ -132,10 +133,7 @@ export default (
           stream: xs
             .merge(
               xs.of(xs.never()),
-              askMultipleChoiceFinished$
-                .filter(x => x === "Let's do this!")
-                .take(1)
-                .mapTo(poses$),
+              startRecording$.take(1).mapTo(poses$),
               stopRecording.take(1)
             )
             .flatten(),
@@ -146,10 +144,7 @@ export default (
           stream: xs
             .merge(
               xs.of(xs.never()),
-              askMultipleChoiceFinished$
-                .filter(x => x === "Let's do this!")
-                .take(1)
-                .mapTo(voiceLevel$),
+              startRecording$.take(1).mapTo(voiceLevel$),
               stopRecording.take(1)
             )
             .flatten(),
