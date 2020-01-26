@@ -14,7 +14,7 @@ if (settings.hideScroll) {
   document.body.style.overflow = "hidden";
 }
 
-const makeProgram = ({ Time = null } = {}) => {
+const makeProgram = () => {
   // an example program
   const program = sources => {
     sources.poses.addListener({ next: console.log });
@@ -24,12 +24,12 @@ const makeProgram = ({ Time = null } = {}) => {
       setMessage: xs.merge(
         xs.of("Hello!"),
         sources.askMultipleChoiceFinished
-          .compose(Time.delay(3000))
+          .compose(sources.Time.delay(3000))
           .mapTo("bye!")
       ),
       askMultipleChoice: xs.of(["Let's do this!"]),
       test: sources.askMultipleChoiceFinished
-        .compose(Time.delay(1000))
+        .compose(sources.Time.delay(1000))
         .mapTo("test")
     };
     return sinks;
