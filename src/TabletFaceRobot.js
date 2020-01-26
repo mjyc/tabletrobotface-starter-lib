@@ -36,7 +36,8 @@ export default (
       .map(r => r.result.text);
 
     // Create a program
-    const sinks = makeProgram({ Time: sources.Time })({
+    const sinks = makeProgram()({
+      Time: sources.Time,
       recordedStreams: dataProxy,
       tabletfaceLoaded: tabletfaceLoaded$,
       poses: poses$,
