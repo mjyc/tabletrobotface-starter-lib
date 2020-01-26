@@ -17,7 +17,7 @@ if (settings.hideScroll) {
 const makeProgram = ({ Time = null } = {}) => {
   // an example program
   const program = sources => {
-    sources.facePoses.addListener({ next: console.log });
+    sources.poses.addListener({ next: console.log });
     sources.voiceLevel.addListener({ next: console.log });
 
     const sinks = {

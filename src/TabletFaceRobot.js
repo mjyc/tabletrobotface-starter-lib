@@ -13,7 +13,7 @@ export default (
       .map(({ time }) => time);
     const tabletfaceLoaded$ = sources.TabletFace.events("load");
     // synchronize sensor inputs
-    const facePoses$ = time$
+    const poses$ = time$
       .compose(sampleCombine(sources.PoseDetection.events("poses")))
       .map(x => x[1]);
     const voiceLevel$ = time$
@@ -39,7 +39,7 @@ export default (
     const sinks = makeProgram({ Time: sources.Time })({
       recordedStreams: dataProxy,
       tabletfaceLoaded: tabletfaceLoaded$,
-      facePoses: facePoses$,
+      poses: poses$,
       voiceLevel: voiceLevel$,
       askMultipleChoiceFinished: askMultipleChoiceFinished$,
       sayFinished: sayFinished$
@@ -57,7 +57,7 @@ export default (
         type: "START_BLINKING",
         value: { maxInterval: 10000 }
       }),
-      xs.combine(followFace$, facePoses$).map(([detecting, poses]) => {
+      xs.combine(followFace$, poses$).map(([detecting, poses]) => {
         // "follow face" logic
         if (
           !!detecting &&
@@ -134,11 +134,11 @@ export default (
               askMultipleChoiceFinished$
                 .filter(x => x === "Let's do this!")
                 .take(1)
-                .mapTo(facePoses$),
+                .mapTo(poses$),
               stopRecording.take(1)
             )
             .flatten(),
-          label: "facePoses"
+          label: "poses"
         },
         {
           // let's not waste memory! do not store data until program-start

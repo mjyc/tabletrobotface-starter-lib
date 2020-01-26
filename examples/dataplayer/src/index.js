@@ -25,7 +25,7 @@ fetch(`/${fileprefix}.json`)
     // just take the "START_BLINKING"
     data["TabletFace"] = [data["TabletFace"][0]];
 
-    const labels2exclude = ["tabletfaceLoaded", "facePoses", "voiceLevel"];
+    const labels2exclude = ["tabletfaceLoaded", "poses", "voiceLevel"];
     const labels2hide = ["videoStart", "TabletFace"];
     const label2label = {};
     const loadedStreams = Object.keys(data)
