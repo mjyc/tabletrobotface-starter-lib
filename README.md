@@ -1,10 +1,12 @@
 # Tablet Robot Face Sandbox
 
-## Getting Started
+## Examples
 
-1. Install nodejs (>= v10.16.0) and npm (>= 6.9.0)
-2. Run
-    ```
-    npm install
-    npm run start
-    ```
+To run examples, install nodejs (>= v10.16.0) and npm (>= 6.9.0) and run
+
+```
+npm install
+npm run start
+```
+
+in folders in [`examples/`](./examples/).
