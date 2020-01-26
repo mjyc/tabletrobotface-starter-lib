@@ -9,4 +9,4 @@ npm install
 npm run start
 ```
 
-in folders in [`examples/`](./examples/).
+in a folder in [`examples/`](./examples/).
