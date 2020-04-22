@@ -12,7 +12,7 @@
   },
   "author": "Michael Jae-Yoon Chung",
   "license": "MIT",
-  "repository": "https://gitlab.com/mjyc/tabletrobotface-starter-lib",
+  "repository": "https://github.com/mjyc/tabletrobotface-starter-lib",
   "dependencies": {
     "@cycle-robot-drivers/run": "1.0.25",
     "@cycle-robot-drivers/screen": "1.1.7",
