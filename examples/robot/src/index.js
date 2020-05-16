@@ -2,7 +2,7 @@ import xs from "xstream";
 import { run } from "@cycle/run";
 import {
   createTabletFaceRobotSandboxDrivers,
-  TabletFaceRobotSandbox
+  TabletFaceRobotSandbox,
 } from "tabletrobotface-starter-lib";
 
 const settings = Object.assign(
@@ -16,7 +16,7 @@ if (settings.hideScroll) {
 
 const makeProgram = () => {
   // an example program
-  const program = sources => {
+  const program = (sources) => {
     sources.poses.addListener({ next: console.log });
     sources.voiceLevel.addListener({ next: console.log });
 
@@ -30,12 +30,12 @@ const makeProgram = () => {
       askMultipleChoice: xs.of(["Let's do this!"]),
       test: sources.askMultipleChoiceFinished
         .compose(sources.Time.delay(1000))
-        .mapTo("test")
+        .mapTo("test"),
     };
     return sinks;
   };
 
-  return sources => {
+  return (sources) => {
     const programSources = sources;
     const programSinks = program(sources);
     const sinks = programSinks;
@@ -45,12 +45,12 @@ const makeProgram = () => {
 
 const main = TabletFaceRobotSandbox(makeProgram, {
   record: settings.record,
-  displayPoseViz: settings.displayPoseViz
+  displayPoseViz: settings.displayPoseViz,
 });
 
 const drivers = createTabletFaceRobotSandboxDrivers({
   record: settings.record,
-  settings
+  settings, // record "settings"
 });
 
 run(main, drivers);
