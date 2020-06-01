@@ -1,4 +1,6 @@
-# Tablet Robot Face Sandbox
+# Tablet Robot Face Starter
+
+A starter code for [tablet robot face](https://github.com/mjyc/tablet-robot-face) used in [interactive-program-repair](https://gitlab.com/mjyc/interactive-program-repair).
 
 ## Examples
 
