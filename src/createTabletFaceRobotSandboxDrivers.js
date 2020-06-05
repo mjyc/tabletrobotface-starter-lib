@@ -10,7 +10,7 @@ import {
 } from "./utils";
 import makeAudioAverageFrequencyDriver from "./makeAudioAverageFrequencyDriver";
 
-export default ({ record = true, settings = {} } = {}) => {
+export default ({ record = false, settings = {} } = {}) => {
   const videoWidth = 640;
   const videoHeight = 480;
 
